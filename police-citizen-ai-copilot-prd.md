@@ -75,6 +75,12 @@ Guardrails apply uniformly regardless of entry point — self-service citizen su
 
 **Why a no-device fallback matters.** A citizen who has lost their phone still needs a way to file a report. Rather than building new infrastructure (kiosk, IVR), the existing Officer Dashboard serves this purpose — an officer enters the report on the citizen's behalf, and it flows through the same guardrails and pipeline as any other submission.
 
+## 4.1 Confidence scoring and escalation logic
+
+**How `confidence_score` is calculated.** The Discrepancy Analytics Tool derives its confidence score from four measurable factors: the time gap between the citizen's reported time and the sensor-recorded time, the location gap between the reported address and the sensor's detection point, whether the type of event reported is consistent with what the sensor detected, and the reliability/completeness of the underlying sensor data. These combine into a single score so that low-quality or ambiguous sensor data lowers confidence rather than producing a falsely certain flag. The score is a prioritization aid for human reviewers, not a verdict — it does not assert that the citizen is lying.
+
+**What happens if an officer doesn't respond to a dispatch confirmation.** Confirmation requests carry a timeout window scaled to urgency. If the assigned officer doesn't respond within that window, the request escalates to a backup officer or supervisor — it is never auto-approved by the system. Every escalation step (who was notified, when, and the outcome) is logged to the same PostgreSQL audit trail as the original confirmation request. The citizen-facing status updates to "under review" during escalation so the reporter isn't left without feedback.
+
 ## 5. Out of scope for Round 1
 
 - Live integration with real municipal sensor networks or dispatch systems (simulated/seeded data used for demo).
