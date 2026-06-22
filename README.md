@@ -32,7 +32,7 @@ The AI proposes, correlates, and flags. A human officer always holds final autho
 
 **Client Gateways** → **Enkrypt AI Input Shield** → **Mastra Workflow Engine ↔ Mastra Supervisor Agent** → five specialized tools (Complaint Processor, Emergency Response Routing, Document Ingestion, Spatial-Temporal Log Correlation, Discrepancy Analytics) → **Qdrant / PostgreSQL** storage layer → **Enkrypt AI Output Shield** → back to Client Gateways.
 
-See the PRD for full details on each component and the reasoning behind key design decisions (dual Enkrypt shields, human-in-the-loop dispatch confirmation, dual-memory storage, offline and no-device fallbacks).
+See the PRD for full details on each component and the reasoning behind key design decisions (dual Enkrypt shields, human-in-the-loop dispatch confirmation, dual-memory storage, offline and no-device fallbacks). Includes confidence scoring and escalation logic documented in the PRD.
 
 ## Author
 
