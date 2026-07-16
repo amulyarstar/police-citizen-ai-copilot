@@ -1,0 +1,35 @@
+{
+  "name": "police-citizen-ai-copilot",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "seed": "tsx scripts/seed.ts"
+  },
+  "dependencies": {
+    "next": "14.2.35",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "better-sqlite3": "11.3.0",
+    "pg": "8.12.0",
+    "zod": "3.25.76",
+    "nanoid": "5.1.6",
+    "@mastra/core": "1.50.1",
+    "@qdrant/js-client-rest": "1.18.0"
+  },
+  "devDependencies": {
+    "typescript": "5.5.4",
+    "@types/node": "20.14.15",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "@types/better-sqlite3": "7.6.11",
+    "@types/pg": "8.11.6",
+    "tailwindcss": "3.4.7",
+    "postcss": "8.4.40",
+    "autoprefixer": "10.4.19",
+    "tsx": "4.16.5"
+  }
+}

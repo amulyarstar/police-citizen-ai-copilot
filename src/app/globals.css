@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: #faf9f6;
+}
+
+/* Evidence-tag styling used by the discrepancy verdict "stamp" */
+.stamp {
+  transform: rotate(-3deg);
+}
+
+::selection {
+  background-color: #b8722e;
+  color: #faf9f6;
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid #b8722e;
+  outline-offset: 2px;
+}
