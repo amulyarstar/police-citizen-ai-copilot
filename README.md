@@ -1,94 +1,167 @@
-# Police & Citizen AI Copilot
+# 🚨 Police & Citizen AI Copilot
 
-Complaint intake → sensor-data correlation → confidence-scored discrepancy
-flags → human-confirmed dispatch. Built on [Mastra](https://mastra.ai)
-(agent/tool orchestration), [Qdrant](https://qdrant.tech) (spatial-temporal
-sensor memory), [Enkrypt AI](https://enkryptai.com) (guardrails), and
-Postgres (immutable audit trail).
+An AI-powered incident management platform that explores how large language models, vector search, and sensor intelligence can support emergency-response workflows.
 
-Implements the five tools from `police-citizen-ai-copilot-prd.md`:
-Complaint Processor, Spatial-Temporal Log Correlation, Discrepancy Analytics,
-Emergency Response Routing, and Document Ingestion.
+The system helps transform citizen complaints into structured incident reports, correlate them with relevant sensor data, identify potential discrepancies, and assist human operators in making informed dispatch decisions.
 
-## Quickstart (zero config)
+## 🚀 Live Demo
+
+**Production Deployment:**  
+https://police-citizen-ai-copilot.vercel.app
+
+---
+
+## 📖 Overview
+
+Emergency-response systems often rely on fragmented information from citizens, cameras, sensors, and dispatch operators. Verifying reports and prioritizing incidents can be time-consuming, especially when information is incomplete or inconsistent.
+
+Police & Citizen AI Copilot demonstrates how AI-assisted workflows can help process reports, surface relevant context, and support human decision-making while keeping humans in control of critical actions.
+
+---
+
+## ✨ Features
+
+### 📝 Complaint Processing
+Converts free-form citizen reports into structured incident records using AI-powered information extraction.
+
+### 📍 Sensor Correlation
+Associates reported incidents with relevant sensor events and contextual information.
+
+### ⚠️ Discrepancy Detection
+Highlights inconsistencies between citizen reports and available supporting data.
+
+### 🚔 Dispatch Support
+Assists operators in reviewing incidents and prioritizing emergency responses.
+
+### 📊 Incident Dashboard
+Provides a centralized interface for monitoring, reviewing, and managing incident workflows.
+
+### 📄 Document Ingestion
+Supports the processing of additional documents and evidence related to incidents.
+
+---
+
+## 🏗️ System Architecture
+
+```text
+Citizen Report
+        │
+        ▼
+AI Processing
+(Gemini + Mastra)
+        │
+        ▼
+Data & Sensor Correlation
+(Qdrant)
+        │
+        ▼
+Discrepancy Analysis
+        │
+        ▼
+Human Review
+        │
+        ▼
+Dispatch Decision
+```
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Technology |
+|-----------|------------|
+| Frontend | Next.js, TypeScript |
+| UI | Tailwind CSS |
+| AI Model | Google Gemini |
+| Agent Framework | Mastra |
+| Vector Database | Qdrant Cloud |
+| Database | Neon Postgres |
+| Deployment | Vercel |
+
+---
+
+## 📸 Screenshots
+
+### Citizen Reporting Portal
+
+<img width="1911" height="882" alt="image" src="https://github.com/user-attachments/assets/dcd6b1fc-29f3-4a5a-b299-fc1372400cbc" />
+
+
+### Officer Dashboard
+
+<img width="1890" height="311" alt="image" src="https://github.com/user-attachments/assets/23ee9c51-f4a6-4b1a-a057-bd3e4e64fab2" />
+
+
+---
+
+## 💭 Why I Built This
+
+I built this project to explore how AI systems can assist emergency-response workflows through information extraction, retrieval, and decision support. The goal was not to automate critical decisions, but to design a human-in-the-loop system that helps operators work more efficiently with better context.
+
+---
+
+## 📚 Key Learnings
+
+Through this project I gained experience with:
+
+- AI agent orchestration
+- Retrieval and vector databases
+- Full-stack application architecture
+- Cloud deployment workflows
+- Human-in-the-loop AI design
+- Building production-ready Next.js applications
+
+---
+
+## ⚡ Getting Started
+
+### Install Dependencies
 
 ```bash
 npm install
+```
+
+### Run Development Server
+
+```bash
 npm run dev
 ```
 
-Open `http://localhost:3000`. That's it — no API keys, no database signup.
-The app runs in **full demo mode**:
+Open:
 
-| Piece | Real | Demo-mode fallback |
-|---|---|---|
-| Case storage & audit log | Postgres (`DATABASE_URL`) | local SQLite file in `.data/` |
-| Sensor correlation | Qdrant (`QDRANT_URL`) | in-memory store, auto-seeded with simulated sensor data |
-| Complaint extraction | Mastra Agent + Claude/GPT (`ANTHROPIC_API_KEY` / `OPENAI_API_KEY`) | deterministic heuristic parser |
-| Guardrails | Enkrypt AI (`ENKRYPT_API_KEY`) | regex-based mock shield |
-
-The status bar at the top of every page tells you exactly which mode you're
-in. Add real credentials to `.env.local` any time — each one independently
-upgrades one piece, nothing else needs to change. See `.env.example`.
-
-**Ready to actually deploy it and show someone? See [DEPLOY.md](./DEPLOY.md).**
-**Prepping to explain design decisions to a technical audience? See [PITCH_NOTES.md](./PITCH_NOTES.md).**
-
-## Try the golden-path demo
-
-The citizen form (`/report`) has three one-click example buttons, each paired
-with hand-placed simulated sensor data so the discrepancy engine produces an
-interesting, reproducible result:
-
-1. **Corroborated** — noise complaint matched by a nearby acoustic sensor.
-2. **Significant discrepancy** — a reported theft, but the nearest sensor
-   recorded something that points to a different kind of incident.
-3. **Emergency** — high-urgency report that requests dispatch and needs
-   officer confirmation on `/dashboard` before anything is "sent."
-
-## Architecture
-
-```
-src/
-  mastra/
-    tools/            Complaint Processor, Spatial-Temporal Correlation,
-                       Discrepancy Analytics, Emergency Response Routing,
-                       Document Ingestion — real @mastra/core createTool()
-    agents/
-      supervisor.ts    Real Mastra Agent wrapping all five tools (for a
-                       conversational interface or `npx mastra dev` Studio)
-  lib/
-    pipeline.ts        The actual request path: calls the five tools in a
-                       fixed sequence + both guardrail shields, writing every
-                       step to the audit trail. See PITCH_NOTES.md for why
-                       this is deterministic rather than agent-routed.
-    caseActions.ts     confirmDispatch / declineDispatch / escalateDispatch —
-                       the only code paths that can move a case out of
-                       "dispatch_pending"
-    db/                Postgres + SQLite repository implementations
-    vectorstore/        Qdrant + in-memory implementations
-    guardrails/         Enkrypt AI + mock implementations
-    llm/structureComplaint.ts   Real Mastra Agent + heuristic fallback
-    seedSensors.ts      Simulated sensor dataset generator
-  app/
-    report/             Citizen intake form + case status tracker
-    dashboard/           Officer dashboard: case list, discrepancy detail,
-                         dispatch confirm/decline/escalate, audit trail
-    api/                 REST routes calling lib/pipeline.ts and lib/caseActions.ts
+```text
+http://localhost:3000
 ```
 
-## Scripts
+---
 
-- `npm run dev` — local dev server
-- `npm run build` / `npm start` — production build + serve
-- `npm run seed` — populate a **real Qdrant** instance with the simulated
-  sensor dataset (only needed once `QDRANT_URL` is set — the in-memory
-  fallback auto-seeds itself on startup instead)
+## 🔑 Environment Variables
 
-## What's simplified for this build (and why)
+Create a `.env.local` file:
 
-See [PITCH_NOTES.md](./PITCH_NOTES.md) for the full list with reasoning —
-short version: geocoding is a fixed locality dropdown instead of a live
-geocoder, dispatch confirmation is modeled as explicit Postgres state instead
-of Mastra's native workflow suspend/resume, and real sensor integration is
-simulated data (which the PRD itself scopes out of Round 1).
+```env
+DATABASE_URL=
+QDRANT_URL=
+QDRANT_API_KEY=
+GEMINI_API_KEY=
+```
+
+Refer to `.env.example` for the complete configuration.
+
+---
+
+## 🔮 Future Improvements
+
+- Real-time sensor integrations
+- Interactive GIS mapping
+- Multi-language complaint support
+- Advanced incident analytics
+- Mobile-first reporting experience
+
+---
+
+## 👤 Author
+
+**Amulya**
+
+Personal project focused on exploring AI-assisted emergency-response systems.
